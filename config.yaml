@@ -1,0 +1,34 @@
+# Forensic-Vision SRCNN — Training Configuration
+# All paths are relative to the project root.
+
+data:
+  hr_dir: data/raw                      # HR images for general training (train.py)
+  patch_size: 96                        # patch size for general pre-training (train.py / pretrain.py)
+  scface_patch_size: 33                 # patch size for SCFace stride-based extraction
+  stride: 14                            # stride for SCFaceDataset patch extraction
+  scale_factor: 3                       # bicubic downscale factor for LR simulation
+  sigma_range: [0.01, 0.04]             # Gaussian noise std range (CCTV sensor simulation)
+  val_split: 0.1                        # fraction of images held out for validation
+  pretrain_dataset_path: data/pretrain  # BSDS500 or ImageNet subset for pre-training
+  finetune_dataset_path: data/scface    # SCFace surveillance images for fine-tuning
+
+training:
+  batch_size: 16
+  num_epochs: 50
+  pretrain_epochs: 50                   # epochs for pretrain.py
+  finetune_epochs: 50                   # epochs for finetune.py
+  alpha: 0.8                            # HybridLoss: alpha*MSE + (1-alpha)*(1-SSIM)
+  learning_rate: 1.0e-4                 # Adam LR for general training and pre-training
+  finetune_lr: 1.0e-5                   # lower Adam LR for SCFace fine-tuning
+  lr_step_size: 20                      # StepLR: decay every N epochs
+  lr_gamma: 0.1                         # StepLR: multiply LR by this factor each step
+  num_workers: 0                        # DataLoader workers (0 = main process; safe on Windows)
+
+paths:
+  checkpoints: checkpoints
+  logs: logs
+  best_model: checkpoints/best_model.pth
+
+hparam_search:
+  n1_values: [32, 64, 128]              # Layer-1 feature map counts to sweep
+  alpha_values: [0.6, 0.8, 1.0]        # HybridLoss alpha values to sweep
