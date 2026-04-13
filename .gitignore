@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Forensic-Vision SRCNN — project specific
+checkpoints/
+data/
+logs/
+test_images/
+*.pth
+*.mp4
+*.avi
